@@ -7,7 +7,7 @@ export default function DashboardLayout() {
     <div>
       <Sidebar />
       <Navbar />
-      <div className="ml-64 mt-14 p-4">
+      <div className="ml-54 mt-14 p-4">
         <Outlet />
       </div>
     </div>
