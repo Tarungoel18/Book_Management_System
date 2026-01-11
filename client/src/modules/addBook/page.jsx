@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { addBookApi } from "./services/bookService.js";
+import { useNavigate } from "react-router-dom";
 
 export default function AddBook() {
   const [form, setForm] = useState({
@@ -14,15 +15,48 @@ export default function AddBook() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
+  const navigate = useNavigate()
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async () => {
-    setLoading(true);
+    
     setError(null);
     setSuccess(null);
+
+
+    if (!form.name.trim()) {
+    setError("Book name is required");
+    return;
+  }
+
+  if (!form.author.trim()) {
+    setError("Author is required");
+    return;
+  }
+
+  if (!form.isbn.trim()) {
+    setError("ISBN is required");
+    return;
+  }
+
+  if (form.isbn.length !== 13) {
+    setError("ISBN must be exactly 13 digits");
+    return;
+  }
+
+  if (!form.price || Number(form.price) <= 0) {
+    setError("Price must be greater than 0");
+    return;
+  }
+
+  if (!form.quantity || Number(form.quantity) < 1) {
+    setError("Quantity must be at least 1");
+    return;
+  }  setLoading(true);
+
 
     try {
       const payload = {
@@ -35,8 +69,7 @@ export default function AddBook() {
       };
 
       await addBookApi(payload);
-
-      setSuccess("Book added successfully 🎉");
+    
 
       setForm({
         name: "",
@@ -46,6 +79,7 @@ export default function AddBook() {
         quantity: "",
         description: "",
       });
+      navigate("/books")
     } catch (err) {
       console.error("Add book error:", err);
       setError("Failed to add book. Please try again.");
