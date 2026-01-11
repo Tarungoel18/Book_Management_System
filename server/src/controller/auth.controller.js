@@ -44,3 +44,27 @@ export const login = async (req,res) => {
 
 }
 
+export const refreshToken = (req,res) => {
+    const {refreshToken} = req.body;
+
+    if(!refreshToken){
+        return res.status(400).json({message:"Refresh Token required"});
+    }
+     try {
+    const result = jwt.verify(refreshToken, refreshTokenSecret);
+
+    const accessToken = jwt.sign(
+      {
+        id:result.id,
+        role:result.role
+      },
+      accessTokenSecret,
+      { expiresIn: accessTokenExpiry }
+    );
+
+    res.json({ accessToken });
+  } catch (err) {
+    return res.status(401).json({ message: "Invalid or expired refresh token" });
+  }
+}
+
