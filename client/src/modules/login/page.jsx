@@ -1,7 +1,7 @@
 import LoginForm from "./component/LoginForm.jsx";
 import { loginApi } from "./services/authService";
 import { useDispatch } from "react-redux";
-// import { loginSuccess } from "../../slices/authSlice";
+import { loginSuccess } from "../../slices/authSlice";
 import { useNavigate } from "react-router-dom";
 
 export default function LoginPage() {
@@ -13,6 +13,7 @@ export default function LoginPage() {
     localStorage.setItem("accessToken", res.data.accessToken);
     localStorage.setItem("refreshToken", res.data.refreshToken);
     dispatch(loginSuccess());
+    console.log("Yess")
     navigate("/add-book");
   };
 
