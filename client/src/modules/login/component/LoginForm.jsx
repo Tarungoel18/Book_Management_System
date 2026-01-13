@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-export default function LoginForm({ onSubmit }) {
+export default function LoginForm({ onSubmit , error }) {
   const [form, setForm] = useState({ username: "", password: "" });
 
   return (
@@ -27,6 +27,7 @@ export default function LoginForm({ onSubmit }) {
         onChange={(e) => setForm({ ...form, password: e.target.value })}
 
       />
+      {error && <div className="text-red-500 mb-4">{error}</div>}
            </div>
         <p className="text-[#0066CC] float-right mb-8">Forgot Password?</p>
       <button

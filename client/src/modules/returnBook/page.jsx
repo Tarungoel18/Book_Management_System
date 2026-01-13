@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
-import {getIssueBook} from "./services/getIssueBook";
+import {getIssueBook,patchStatus} from "./services/getIssueBook";
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import KeyboardReturnIcon from '@mui/icons-material/KeyboardReturn';
 export default function ReturnBook() {
   const [books, setBooks] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -54,6 +56,15 @@ export default function ReturnBook() {
     );
   }
 
+  const handleReturn = async (id,status) => {
+  console.log(id , "return id")
+    const res = await patchStatus({id,status});
+    console.log(res , "return response")
+    fetchBooks();
+
+  }
+const dateObject = new Date();
+const currentTimestampMs = dateObject.getTime();
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
       <div className="max-w-7xl mx-auto">
@@ -76,8 +87,11 @@ export default function ReturnBook() {
                   <th className="px-6 py-4 text-left">Book ID</th>
                   <th className="px-6 py-4 text-left">Student ID</th>
                   <th className="px-6 py-4 text-left">Issue Date</th>
-                  <th className="px-6 py-4 text-left">Return Date (₹)</th>
+                  <th className="px-6 py-4 text-left">Return Date</th>
+                    <th className="px-6 py-4 text-left">Book Kept Duration</th>
                   <th className="px-6 py-4 text-left">Status</th>
+                  <th className="px-6 py-4 text-left">Action</th>
+
                 </tr>
               </thead>
 
@@ -102,8 +116,12 @@ export default function ReturnBook() {
                       </td>
                       <td className="px-6 py-4">{book.student_id}</td>
                       <td className="px-6 py-4">{book.issue_date}</td>
-                      <td className="px-6 py-4">{book.return_date}</td>
+                      <td className="px-6 py-4">{book.return_date || '-'}</td>
+                      <td className="px-6 py-4">{currentTimestampMs}</td>
+
                       <td className="px-6 py-4">{book.status}</td>
+                      <td className="px-6 py-4 cursor-pointer" onClick={() => handleReturn(book.id,"R")}>{ book.status === 'I' ? <KeyboardReturnIcon/> : "Already Returned"}</td>
+
                     </tr>
                   ))
                 )}

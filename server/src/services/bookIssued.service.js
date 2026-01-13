@@ -91,3 +91,13 @@ export const fetchIssuedBooks = async () => {
     );
     return rows;
 }
+
+
+export const patchStatusService = async ({ id, status }) => {
+    console.log(id,status)
+    const [result] = await pool.query(
+        'UPDATE issue_return_book SET status = ? WHERE id = ?',
+        [status, id]
+    );
+    return result;
+}

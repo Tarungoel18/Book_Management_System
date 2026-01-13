@@ -3,9 +3,11 @@ import authRoutes from "./routes/auth.routes.js"
 import bookRoutes from "./routes/book.routes.js"
 import studentRoutes from "./routes/student.route.js"
 import bookIssuedRoutes from "./routes/bookIssued.route.js"
+import bodyParser from "body-parser";
 import cors from "cors";
 
 const app = express();
+app.use(bodyParser.json());
 
 app.use(express.json());
 app.use(cors())

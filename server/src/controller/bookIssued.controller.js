@@ -1,4 +1,4 @@
-import {getIssuedBooks, getreturnedBook,createBookIssued,markReturned,getUserWithStudentName,getBookWithName,issueBookToStudent,fetchIssuedBooks} from "../services/bookIssued.service.js"
+import {getIssuedBooks, getreturnedBook,createBookIssued,markReturned,getUserWithStudentName,getBookWithName,issueBookToStudent,fetchIssuedBooks,patchStatusService} from "../services/bookIssued.service.js"
 
 export const issueBook = async (req,res) => {
     const {issueDate,student_name, book_name} = req.body;
@@ -101,5 +101,18 @@ export const fetchIssuedBooksController = async (req, res) => {
     console.log(issuedBooks,"issuedBooksissss")
     res.json({
         data: issuedBooks,
+    });
+}
+
+
+export const patchStatusController = async (req, res) => {
+    console.log("ywdhauhd")
+    console.log(req.body)
+    const { id, status } = req.body;
+    const result = await patchStatusService({ id, status });
+    console.log("djhjbh")
+     return res.status(201).json({
+        message: "Status updated successfully",
+        result,
     });
 }
