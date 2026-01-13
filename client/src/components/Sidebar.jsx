@@ -1,7 +1,8 @@
 import { NavLink } from "react-router-dom";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import MenuBookIcon from "@mui/icons-material/MenuBook";
-
+import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
+import KeyboardReturnIcon from '@mui/icons-material/KeyboardReturn';
 export default function Sidebar() {
   const activeClass =
     "bg-white text-[#4F46E5] rounded-lg";
@@ -44,6 +45,30 @@ export default function Sidebar() {
         >
           <MenuBookIcon fontSize="small" />
           Book List
+        </NavLink>
+
+         <NavLink
+          to="/issue-book"
+          className={({ isActive }) =>
+            `flex items-center gap-3 px-6 w-40 ml-4 py-2 text-base ${
+              isActive ? activeClass : inactiveClass
+            }`
+          }
+        >
+          <LibraryBooksIcon fontSize="small" />
+          Issue Book
+        </NavLink>
+
+         <NavLink
+          to="/return-book"
+          className={({ isActive }) =>
+            `flex items-center gap-3 px-6 w-40 ml-4 py-2 text-base ${
+              isActive ? activeClass : inactiveClass
+            }`
+          }
+        >
+          <KeyboardReturnIcon fontSize="small" />
+          Return
         </NavLink>
       </nav>
     </div>

@@ -6,6 +6,8 @@ import AuthLayout from "../layouts/AuthLayout";
 import DashboardLayout from "../layouts/DashboardLayout";
 import PrivateRoute from "./PrivateRoute";
 import { Navigate } from "react-router-dom";
+import IssuePage from "../modules/issueBook/page"
+import ReturnBook from "../modules/returnBook/page";
 export default function AppRoutes() {
   return (
     <Routes>
@@ -24,6 +26,10 @@ export default function AppRoutes() {
       >
         <Route path="/add-book" element={<AddBookPage />} />
         <Route path="/books" element={<BookListPage />} />
+        <Route path="/issue-book" element={<IssuePage />} />
+         <Route path="/return-book" element={<ReturnBook />} />
+
+
       </Route>
     </Routes>
   );
