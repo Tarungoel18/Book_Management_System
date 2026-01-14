@@ -4,8 +4,8 @@ import {addBook,getBooks} from "../controller/book.controller.js"
 
 const router = Router();
 
-router.post("/", addBook);
-router.get("/", getBooks);
+router.post("/",authMiddleware, addBook);
+router.get("/",authMiddleware, getBooks);
 
 export default router;
 

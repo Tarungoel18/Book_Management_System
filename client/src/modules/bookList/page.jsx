@@ -5,37 +5,81 @@ export default function BooksTable() {
   const [books, setBooks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [allBooks, setAllBooks] = useState([]);
+  const [search, setSearch] = useState("");
+
 
   const [page, setPage] = useState(1);
   const limit = 5;
 
   const [hasNextPage, setHasNextPage] = useState(true);
 
-  useEffect(() => {
-    fetchBooks();
-  }, [page]);
+useEffect(() => {
+  if (search.length >= 3) return; 
+  fetchBooks();
+}, [page]);
 
-  const fetchBooks = async () => {
-    setLoading(true);
-    setError(null);
+useEffect(() => {
+  if (search.length >= 3) {
+    fetchBooks(); 
+  }
+}, [search]);
 
-    try {
-      const response = await getBooksApi(page, limit);
 
-      const { data } = response.data;
 
+const fetchBooks = async () => {
+  setLoading(true);
+  setError(null);
+
+  try {
+    const response = search.length >= 3
+      ? await getBooksApi(null, null)
+      : await getBooksApi(page, limit);
+
+    const { data } = response.data;
+
+    if (search.length >= 3) {
+      setAllBooks(data || []);
+    } else {
       setBooks(data || []);
-
       setHasNextPage(data.length === limit);
-    } catch (err) {
-      console.error("Error fetching books:", err);
-      setError("Failed to load books. Please try again.");
-      setBooks([]);
-      setHasNextPage(false);
-    } finally {
-      setLoading(false);
     }
-  };
+  } catch (err) {
+    console.error("Error fetching books:", err);
+    setError("Failed to load books.");
+    setBooks([]);
+  } finally {
+    setLoading(false);
+  }
+};
+
+useEffect(() => {
+  if (search.length < 3) return;
+
+  const filtered = allBooks.filter((book) =>
+    book.title.toLowerCase().includes(search.toLowerCase())
+  );
+
+  setBooks(filtered);
+  setHasNextPage(false); 
+}, [search, allBooks]);
+
+
+useEffect(() => {
+  setPage(1);
+}, [search]);
+
+const handleClearSearch = () => {
+  setSearch("");
+  setAllBooks([]);
+  setPage(1);
+  window.location.reload();
+window.onload = () => {
+  window.scrollTo(0, 250);
+};
+
+};
+
 
   const handlePrevPage = () => {
     if (page > 1) setPage((prev) => prev - 1);
@@ -59,9 +103,32 @@ export default function BooksTable() {
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
       <div className="max-w-7xl mx-auto">
-        <h1 className="text-3xl font-semibold text-gray-800 mb-6">
-          Books
-        </h1>
+       <div className="flex justify-between items-center mb-6">
+  <h1 className="text-3xl font-semibold text-gray-800">
+    Books
+  </h1>
+
+  <div className="flex gap-2">
+    <input
+      type="text"
+      placeholder="Search by title (min 3 letters)"
+      value={search}
+      onChange={(e) => setSearch(e.target.value)}
+      className="border px-4 py-2 rounded w-72 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+    />
+
+    {search && (
+      <button
+        onClick={handleClearSearch}
+        className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
+      >
+        Clear
+      </button>
+    )}
+  </div>
+</div>
+
+
 
         {error && (
           <div className="bg-red-100 text-red-700 px-4 py-3 rounded mb-4">
@@ -119,21 +186,22 @@ export default function BooksTable() {
             </span>
 
             <div className="flex gap-2">
-              <button
-                onClick={handlePrevPage}
-                disabled={page === 1}
-                className="px-4 py-2 border rounded disabled:opacity-50"
-              >
-                Previous
-              </button>
+             <button
+  onClick={handlePrevPage}
+  disabled={page === 1 || search.length >= 3}
+  className="px-4 py-2 border rounded disabled:opacity-50"
+>
+  Previous
+</button>
 
-              <button
-                onClick={handleNextPage}
-                disabled={!hasNextPage}
-                className="px-4 py-2 border rounded disabled:opacity-50"
-              >
-                Next
-              </button>
+<button
+  onClick={handleNextPage}
+  disabled={!hasNextPage || search.length >= 3}
+  className="px-4 py-2 border rounded disabled:opacity-50"
+>
+  Next
+</button>
+
             </div>
           </div>
         </div>
