@@ -12,6 +12,34 @@ export default function ReturnBook() {
 
   const [hasNextPage, setHasNextPage] = useState(true);
 
+  const formatDate = (dateString) => {
+  if (!dateString) return "-";
+
+  const date = new Date(dateString);
+
+  const day = String(date.getDate()).padStart(2, "0");
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const year = String(date.getFullYear()).slice(-2);
+
+  return `${day}/${month}/${year}`;
+};
+
+
+const getKeptDuration = (issueDate, returnDate) => {
+  const issueTime = new Date(issueDate).getTime();
+  const endTime = returnDate
+    ? new Date(returnDate).getTime()
+    : Date.now();
+
+  const diffMs = endTime - issueTime;
+
+  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+  return `${diffDays+1} day(s)`;
+};
+
+
+
   useEffect(() => {
     fetchBooks();
   }, [page]);
@@ -115,9 +143,9 @@ const currentTimestampMs = dateObject.getTime();
                         {book.book_id}
                       </td>
                       <td className="px-6 py-4">{book.student_id}</td>
-                      <td className="px-6 py-4">{book.issue_date}</td>
-                      <td className="px-6 py-4">{book.return_date || '-'}</td>
-                      <td className="px-6 py-4">{currentTimestampMs}</td>
+                      <td className="px-6 py-4">{formatDate(book.issue_date)}</td>
+                      <td className="px-6 py-4">{formatDate(book.return_date) || '-'}</td>
+                      <td className="px-6 py-4">{getKeptDuration(book.issue_date, book.return_date)}</td>
 
                       <td className="px-6 py-4">{book.status}</td>
                       <td className="px-6 py-4 cursor-pointer" onClick={() => handleReturn(book.id,"R")}>{ book.status === 'I' ? <KeyboardReturnIcon/> : "Already Returned"}</td>

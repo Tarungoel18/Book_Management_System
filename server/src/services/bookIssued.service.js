@@ -96,7 +96,7 @@ export const fetchIssuedBooks = async () => {
 export const patchStatusService = async ({ id, status }) => {
     console.log(id,status)
     const [result] = await pool.query(
-        'UPDATE issue_return_book SET status = ? WHERE id = ?',
+        'UPDATE issue_return_book SET status = ?,  return_date = CURRENT_TIMESTAMP  WHERE id = ?',
         [status, id]
     );
     return result;
