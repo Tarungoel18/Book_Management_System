@@ -3,6 +3,7 @@ import DashboardIcon from "@mui/icons-material/Dashboard";
 import MenuBookIcon from "@mui/icons-material/MenuBook";
 import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
 import KeyboardReturnIcon from '@mui/icons-material/KeyboardReturn';
+import PersonIcon from '@mui/icons-material/Person';
 export default function Sidebar() {
   const activeClass =
     "bg-white text-[#4F46E5] rounded-lg";
@@ -45,6 +46,18 @@ export default function Sidebar() {
         >
           <MenuBookIcon fontSize="small" />
           Book List
+        </NavLink>
+
+           <NavLink
+          to="/students"
+          className={({ isActive }) =>
+            `flex items-center gap-3 px-6 w-40 ml-4 py-2 text-base ${
+              isActive ? activeClass : inactiveClass
+            }`
+          }
+        >
+          <PersonIcon fontSize="small" />
+           Students
         </NavLink>
 
          <NavLink

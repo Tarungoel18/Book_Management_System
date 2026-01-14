@@ -8,6 +8,8 @@ import PrivateRoute from "./PrivateRoute";
 import { Navigate } from "react-router-dom";
 import IssuePage from "../modules/issueBook/page"
 import ReturnBook from "../modules/returnBook/page";
+import StudentsTable from "../modules/students/page.jsx";
+import StudentForm from "../modules/addStudent/page.jsx";
 export default function AppRoutes() {
   return (
     <Routes>
@@ -28,6 +30,9 @@ export default function AppRoutes() {
         <Route path="/books" element={<BookListPage />} />
         <Route path="/issue-book" element={<IssuePage />} />
          <Route path="/return-book" element={<ReturnBook />} />
+         <Route path="/students" element={<StudentsTable />} />
+         <Route path="/add-student" element={<StudentForm/>} />
+
 
 
       </Route>

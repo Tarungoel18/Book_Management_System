@@ -1,4 +1,4 @@
-import {createBook,getBooksPaginated} from "../services/book.service.js"
+import {createBook,getBooksPaginated,getAllBooks} from "../services/book.service.js"
 
 export const addBook = async (req,res) => {
    const {title,author,isbn,price,quantity,about} = req.body;
@@ -22,16 +22,26 @@ export const addBook = async (req,res) => {
 }
 
 
-export const getBooks = async (req,res) => {
-    const page  = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 10;
-    const offset = (page - 1) * limit;
+export const getBooks = async (req, res) => {
+  const page = req.query.page;
+  const limit = req.query.limit;
 
-    const books  = await getBooksPaginated(limit,offset);
+  if (!page && !limit) {
+    const books = await getAllBooks();
+    return res.json({
+      data: books,
+    });
+  }
 
-    res.json({
-        page,
-        limit,
-        data:books,
-    })
-}
+  const pageNum = parseInt(page) || 1;
+  const limitNum = parseInt(limit) || 10;
+  const offset = (pageNum - 1) * limitNum;
+
+  const books = await getBooksPaginated(limitNum, offset);
+
+  res.json({
+    page: pageNum,
+    limit: limitNum,
+    data: books,
+  });
+};

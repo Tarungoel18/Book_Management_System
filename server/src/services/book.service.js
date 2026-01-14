@@ -29,4 +29,13 @@ export const getBooksPaginated = async  (limit,offset) => {
     );
     return rows;
 
+    
+
 }
+
+export const getAllBooks = async () => {
+  const [rows] = await pool.query(
+    `SELECT * FROM book_details ORDER BY created_at DESC`
+  );
+  return rows;
+};
