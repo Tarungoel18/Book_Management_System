@@ -97,9 +97,14 @@ export const issuingBookToStudent = async (req,res) => {
 
 
 export const fetchIssuedBooksController = async (req, res) => {
-    const issuedBooks = await fetchIssuedBooks();
+     const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const offset = (page - 1) * limit;
+    const issuedBooks = await fetchIssuedBooks(limit,offset);
     console.log(issuedBooks,"issuedBooksissss")
     res.json({
+        page,
+        limit,
         data: issuedBooks,
     });
 }

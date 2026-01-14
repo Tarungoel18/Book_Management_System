@@ -39,7 +39,7 @@ const IssuePage = () => {
        book_id: selectedBook+"",
        statuss:'I'
     })
-    navigate("/add-book");
+    navigate("/return-book");
   };
 
   if (loading) return <h1>Loading</h1>;

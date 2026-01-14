@@ -6,6 +6,9 @@ export default function ReturnBook() {
   const [books, setBooks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [openModal, setOpenModal] = useState(false);
+  const [selectedBookId, setSelectedBookId] = useState(null);
+
 
   const [page, setPage] = useState(1);
   const limit = 5;
@@ -26,17 +29,18 @@ export default function ReturnBook() {
 
 
 const getKeptDuration = (issueDate, returnDate) => {
-  const issueTime = new Date(issueDate).getTime();
-  const endTime = returnDate
-    ? new Date(returnDate).getTime()
-    : Date.now();
+  const start = new Date(issueDate);
+  const end = returnDate ? new Date(returnDate) : new Date();
 
-  const diffMs = endTime - issueTime;
+  start.setHours(0, 0, 0, 0);
+  end.setHours(0, 0, 0, 0);
 
+  const diffMs = end - start;
   const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
 
-  return `${diffDays+1} day(s)`;
+  return `${diffDays + 1} day(s)`;
 };
+
 
 
 
@@ -84,16 +88,19 @@ const getKeptDuration = (issueDate, returnDate) => {
     );
   }
 
-  const handleReturn = async (id,status) => {
-  console.log(id , "return id")
-    const res = await patchStatus({id,status});
-    console.log(res , "return response")
+ const handleReturn = async (id, status) => {
+  try {
+    await patchStatus({ id, status });
+    setOpenModal(false);
+    setSelectedBookId(null);
     fetchBooks();
-
+  } catch (err) {
+    console.error(err);
   }
-const dateObject = new Date();
-const currentTimestampMs = dateObject.getTime();
+};
+
   return (
+    
     <div className="p-6 bg-gray-50 min-h-screen">
       <div className="max-w-7xl mx-auto">
         <h1 className="text-3xl font-semibold text-gray-800 mb-6">
@@ -148,7 +155,26 @@ const currentTimestampMs = dateObject.getTime();
                       <td className="px-6 py-4">{getKeptDuration(book.issue_date, book.return_date)}</td>
 
                       <td className="px-6 py-4">{book.status}</td>
-                      <td className="px-6 py-4 cursor-pointer" onClick={() => handleReturn(book.id,"R")}>{ book.status === 'I' ? <KeyboardReturnIcon/> : "Already Returned"}</td>
+                      <td className="px-6 py-4">
+                        {book.status === "I" ? (
+                          <button
+                            onClick={() => {
+                              setSelectedBookId(book.id);
+                              setOpenModal(true);
+                            }}
+                            className="px-5 py-1 bg-indigo-600 text-white rounded-full hover:bg-indigo-700"
+                          >
+                          Return
+                          </button>
+                        ) : (
+                          <button
+                            disabled
+                            className="px-3 py-1 bg-gray-300 text-gray-600 rounded-full cursor-not-allowed"
+                          >
+                            Returned
+                          </button>
+                        )}
+                      </td>
 
                     </tr>
                   ))
@@ -182,6 +208,38 @@ const currentTimestampMs = dateObject.getTime();
           </div>
         </div>
       </div>
+      {openModal && (
+  <div className="fixed inset-0 bg-opacity-40 flex items-center justify-center z-50">
+    <div className="bg-white rounded-lg p-6 w-96 shadow-lg">
+      <h2 className="text-lg font-semibold text-gray-800 mb-4">
+        Confirm Return
+      </h2>
+
+      <p className="text-gray-600 mb-6">
+        Are you sure you want to return this book?
+      </p>
+
+      <div className="flex justify-end gap-3">
+        <button
+          onClick={() => setOpenModal(false)}
+          className="px-4 py-2 border rounded"
+        >
+          Cancel
+        </button>
+
+        <button
+          onClick={() => handleReturn(selectedBookId, "R")}
+          className="px-4 py-2 bg-indigo-600 text-white rounded"
+        >
+          Confirm
+        </button>
+      </div>
     </div>
+  </div>
+)}
+
+    </div>
+    
+    
   );
 }

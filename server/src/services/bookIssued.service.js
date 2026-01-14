@@ -85,9 +85,11 @@ export const issueBookToStudent = async ({student_id,book_id,statuss}) => {
 
 
 
-export const fetchIssuedBooks = async () => {
+export const fetchIssuedBooks = async (limit,offset) => {
     const [rows] = await pool.query(
-        `SELECT * FROM issue_return_book`,
+        `SELECT * FROM issue_return_book ORDER BY issue_date DESC
+        LIMIT ? OFFSET ? `,
+     [limit, offset]
     );
     return rows;
 }
